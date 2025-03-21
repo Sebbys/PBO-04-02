@@ -91,32 +91,53 @@ src/
 ```mermaid
 classDiagram
     class Product {
+        -String id
         -String name
         -double price
-        +Product(String, double)
+        +Product(String, String, double)
+        +String getId()
+        +String getName()
         +double getPrice()
     }
 
     class DiscountedProduct {
         -double discountPercentage
-        +DiscountedProduct(String, double, double)
+        +DiscountedProduct(String, String, double, double)
         +double calculateDiscountedPrice()
+        +double getPrice()
     }
 
     class ShoppingCart {
-        -List<Product> items
+        -List~Product~ items
         +void addItem(Product)
-        +void removeItem(Product)
         +double calculateTotal()
     }
 
     class Cashier {
         -ShoppingCart cart
+        -ProductCatalog catalog
+        +Cashier(ProductCatalog)
+        +void selectProduct(String)
         +void checkout()
     }
 
+    class ProductCatalog {
+        -Map~String,Product~ products
+        +void addProduct(Product)
+        +Product findProductById(String)
+    }
+
+    class Main {
+        +main(String[]) void
+    }
+
     DiscountedProduct --|> Product
-    ShoppingCart "1" --> "0..*" Product : contains
+    ShoppingCart "1" --> "*" Product : contains
     Cashier "1" --> "1" ShoppingCart : uses
-    Main "1" --> "1" Cashier : initializes
+    Cashier "1" --> "1" ProductCatalog : uses
+    Main ..> Cashier : creates
+    Main ..> ProductCatalog : creates
 ```
+----
+> Main Class Relations (Optional)
+
